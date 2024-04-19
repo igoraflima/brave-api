@@ -6,5 +6,7 @@ public interface IUserService {
 
     UserDTO find(String login, String password);
 
+    UserDTO findById(Long id);
+
     UserDTO insert(UserDTO request);
 }

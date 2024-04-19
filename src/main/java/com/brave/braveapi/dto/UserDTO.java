@@ -1,7 +1,6 @@
 package com.brave.braveapi.dto;
 
 import com.brave.braveapi.enums.GenderEnum;
-import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 
 import java.util.Date;
