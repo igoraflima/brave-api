@@ -8,12 +8,15 @@ import com.brave.braveapi.exceptions.NotFoundException;
 import com.brave.braveapi.exceptions.ServerErroException;
 import com.brave.braveapi.persistence.IUserRepository;
 import com.brave.braveapi.ports.IUserService;
+import com.brave.braveapi.util.InternalValidationUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
+
+import static com.brave.braveapi.util.InternalValidationUtils.*;
 
 @Service
 public class UserService implements IUserService {
@@ -33,6 +36,27 @@ public class UserService implements IUserService {
 
             if (response.isEmpty()) {
                 throw new NotFoundException(String.format("Usuário não encontrado pelo login e senha passados - %s", login));
+            }
+
+            return toDto(response.get());
+        } catch (RuntimeException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new ServerErroException("Ocorreu algum erro ao tentar buscar um usuário");
+        }
+    }
+
+    @Override
+    public UserDTO findById(Long id) {
+        try {
+            if (isNull(id)) {
+                throw new BadRequestException("O id do usuário não pode ser nulo");
+            }
+
+            Optional<User> response = repository.findById(id);
+
+            if (response.isEmpty()) {
+                throw new NotFoundException(String.format("Usuário não encontrado pelo id passado - %s", id));
             }
 
             return toDto(response.get());
